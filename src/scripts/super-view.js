@@ -105,7 +105,7 @@ function toggleSuperView(state) {
           }
         })
         // console.log('spamming')
-      }, 10)
+      }, 100)
     }
   }
 }
