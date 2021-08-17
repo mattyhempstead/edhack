@@ -39,8 +39,8 @@ fetch = (req, options={}) => {
 
   // If user sends a view request, create/configure BUMP switch
   if (req.url.endsWith('?view=1')) {
-
-    getElement('dtf-head-layout').then((viewDiv) => {
+    getElement('dsf-thread').then((viewDiv) => {
+      viewDiv = viewDiv.querySelector("div.dtf-head-layout");
       viewDiv = viewDiv.children[1];
 
       // Add bump switch if it does not already exist
@@ -105,7 +105,7 @@ function toggleSuperView(state) {
           }
         })
         // console.log('spamming')
-      }, 100)
+      }, 250) // 4 times per second
     }
   }
 }
@@ -117,7 +117,7 @@ function toggleSuperView(state) {
  */
 const getElement = (className) => {
   return new Promise((resolve, reject) => {
-   
+
     // Instantly return element if it already exists in DOM
     let el = document.getElementsByClassName(className);
     if (el.length === 1) {
