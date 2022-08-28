@@ -18,29 +18,30 @@ let viewInterval  // The interval used to spam views
 
 let originalFetch = fetch
 fetch = (req, options={}) => {
-  
+
   // If sending a normal fetch request, don't do special stuff
   if (!(req instanceof Request)) return originalFetch(req, options)
 
-
   // If any requests are made which don't contain the current thread string, disable the view spammer
-  // This just a safety feature because edstem is single page which ensures that when users navigate 
+  // This just a safety feature because edstem is single page which ensures that when users navigate
   // away from the discussion, the spammer is stopped
   // This will probably also cause the spammer to disable seemingly randomly, however that is probably fine
-  if (req.url !== viewURL) toggleSuperView(false)
+  if (req.url !== viewURL) toggleSuperView(false);
 
 
   // Keep the global x-token variable updated
-  let xTokenNew = req.headers.get('x-token')
-  if (xTokenNew !== null) { 
-    xToken = xTokenNew
+  let xTokenNew = req.headers.get('x-token');
+  if (xTokenNew !== null) {
+    xToken = xTokenNew;
   }
 
 
   // If user sends a view request, create/configure BUMP switch
   if (req.url.endsWith('?view=1')) {
-    getElement('dsf-thread').then((viewDiv) => {
-      viewDiv = viewDiv.querySelector("div.dtf-head-layout");
+    getElement('dissho-thread').then((viewDiv) => {
+      // console.log("disshothread", viewDiv);
+
+      viewDiv = viewDiv.querySelector(".disthrb-head-layout");
       viewDiv = viewDiv.children[1];
 
       // Add bump switch if it does not already exist
@@ -48,16 +49,16 @@ fetch = (req, options={}) => {
 
         // For some reason you need to add the switch this way rather than appending innerHTML to viewDiv
         // If you don't, the page no longer updates the view counter live
-        superViewDiv = document.createElement('div')
-        superViewDiv.className = 'dtf-head-action super-view'
+        superViewDiv = document.createElement('div');
+        superViewDiv.className = 'disthrb-head-action super-view';
         superViewDiv.innerHTML = `
           <label class="switch">
             <input type="checkbox" class="super-view-checkbox">
             <span class="slider"></span>
           </label>
-          <p class="dtf-head-action-label">BUMP</p>
-        `
-        viewDiv.appendChild(superViewDiv)
+          <p class="disthrb-head-action-label">BUMP</p>
+        `;
+        viewDiv.appendChild(superViewDiv);
 
         // Listen for changes in the bump switch
         checkbox = viewDiv.getElementsByClassName('super-view-checkbox')[0]
@@ -73,7 +74,6 @@ fetch = (req, options={}) => {
 
     // If thread changes, turn off checkbox
     let newViewURL = req.url;
-    //console.log(newViewURL)
     if (newViewURL !== viewURL) {
       viewURL = newViewURL
       toggleSuperView(false)
@@ -117,16 +117,16 @@ function toggleSuperView(state) {
  */
 const getElement = (className) => {
   return new Promise((resolve, reject) => {
-
     // Instantly return element if it already exists in DOM
     let el = document.getElementsByClassName(className);
-    if (el.length === 1) {
-      resolve(el[0]);
-    } else if (el.length > 1) {
-      reject('Found two elements with class');
+    //if (el.length === 1 || el.length === 2) {
+    if (el.length >= 1) {
+        resolve(el[0]);
     }
+    //} else if (el.length > 1) {
+      //reject('Found two elements with class');
+    ///}
 
-    
     // Create an observer that listens for object to be added to DOM
     const observer = new MutationObserver((mutationsList, observer) => {
       for (const mutation of mutationsList) {
@@ -142,7 +142,8 @@ const getElement = (className) => {
             observer.disconnect();
             resolve(el[0]);
           } else if (el.length > 1) {
-            reject('Found two elements with class');
+            console.log(el);
+            reject("Two elements satisfying query");
           }
         }
 
@@ -150,5 +151,5 @@ const getElement = (className) => {
     });
     observer.observe(document.body, {childList:true, subtree:true});
 
-  })
+  });
 }

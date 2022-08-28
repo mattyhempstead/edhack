@@ -1,8 +1,8 @@
 {
     "name": "edhack",
     "description": "It's just normal edstem with some uhh... extra functionality",
-    "version": "1.0.2",
-    "manifest_version": 2,
+    "version": "1.0.3",
+    "manifest_version": 3,
     "content_scripts": [
         {
             "matches": [
@@ -19,6 +19,14 @@
         }
     ],
     "web_accessible_resources": [
-        "scripts/super-view.js"
+        {
+            "resources": [
+                "scripts/super-view.js"
+            ],
+            "matches": [
+                "https://edstem.org/*",
+                "http://edstem.org/*"
+            ]
+        }
     ]
 }
